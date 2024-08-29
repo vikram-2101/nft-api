@@ -4,6 +4,27 @@ const nfts = JSON.parse(
   fs.readFileSync(`${__dirname}/../nft-data/data/nft-simple.json`)
 );
 
+const checkId = (req, res, next, value) => {
+  console.log(`ID: ${value}`);
+  if (req.params.id * 1 > nfts.length) {
+    return res.status(404).json({
+      status: "failure",
+      message: "invalid ID",
+    });
+  }
+  next();
+};
+
+const checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Missing name and price",
+    });
+  }
+  next();
+};
+
 const getAllNFTs = (req, res) => {
   console.log(req.requestTime);
   res.status(200).json({
@@ -56,12 +77,6 @@ const getSingleNFT = (req, res) => {
 };
 // PATCH METHOD
 const updateNFT = (req, res) => {
-  if (req.params.id * 1 > nfts.length) {
-    return res.status(404).json({
-      status: "failure",
-      message: "invalid ID",
-    });
-  }
   res.status(200).json({
     status: "success",
     data: {
@@ -71,13 +86,6 @@ const updateNFT = (req, res) => {
 };
 // DELETE METHOD
 const deleteNFT = (req, res) => {
-  if (req.params.id * 1 > nfts.length) {
-    return res.status(404).json({
-      status: "failure",
-      message: "invalid ID",
-    });
-  }
-
   res.status(204).json({
     status: "success",
     data: null,
@@ -90,4 +98,6 @@ module.exports = {
   createNFT,
   updateNFT,
   deleteNFT,
+  checkId,
+  checkBody,
 };
