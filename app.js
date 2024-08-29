@@ -1,8 +1,10 @@
 const express = require("express");
 const fs = require("fs");
+const morgan = require("morgan");
 
 const app = express();
 app.use(express.json());
+app.use(morgan("dev"));
 
 // CUSTOM MIDDLEWARE
 
@@ -11,19 +13,27 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
 const nfts = JSON.parse(
   fs.readFileSync(`${__dirname}/nft-data/data/nft-simple.json`)
 );
 
 const getAllNFTs = (req, res) => {
+  console.log(req.requestTime);
   res.status(200).json({
     status: "success",
-    results: nfts.length,
+    requestTime: req.requestTime,
+    length: nfts.length,
     data: {
       nfts,
     },
   });
 };
+
 // POST METHOD
 const createNFT = (req, res) => {
   //   console.log(req.body);
@@ -92,12 +102,7 @@ const deleteNFT = (req, res) => {
   });
 };
 
-// app.get("/api/v1/nfts", getAllNFTs);
-// app.post("/api/v1/nfts", createNFT);
-// app.get("/api/v1/nfts/:id", getSingleNFT);
-// app.patch("/api/v1/nfts/:id", updateNFT);
-// app.delete("/api/v1/nfts/:id", deleteNFT);
-
+//ROUTER FOR NFTS
 app.route("/api/v1/nfts").get(getAllNFTs).post(createNFT);
 app
   .route("/api/v1/nfts/:id")
