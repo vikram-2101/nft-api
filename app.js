@@ -172,6 +172,9 @@ const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
 
+// SERVING TEMPLATE DEMO
+app.use(express.static(`${__dirname}/nft-data/img`));
+
 // CUSTOM MIDDLEWARE
 
 app.use((req, res, next) => {
