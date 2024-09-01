@@ -6,6 +6,7 @@ const {
   updateNFT,
   deleteNFT,
   aliasTopNFTs,
+  getNFTsStats,
   // checkId,
   // checkBody,
 } = require("../controllers/nftController");
@@ -15,6 +16,9 @@ const router = express.Router();
 
 //TOP 5 NFTS BY PRICE
 router.route("/top-5-nfts").get(aliasTopNFTs, getAllNFTs);
+
+// STATS ROUTE
+router.route("/nfts-stats").get(getNFTsStats);
 
 // router.param("id", checkId);
 
