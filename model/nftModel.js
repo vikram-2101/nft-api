@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 const nftSchema = new mongoose.Schema(
   {
@@ -8,6 +9,7 @@ const nftSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
+    slug: String,
     duration: {
       type: String,
       required: [true, "must provide duration"],
@@ -69,6 +71,26 @@ const nftSchema = new mongoose.Schema(
 // does not get stored in database but shows at the time of execution
 nftSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7;
+});
+
+// MONGOOSE MIDDLEWARE:
+
+// DOCUMENT MIDDLEWARE: runs before .save() or .create()
+// pre hook document
+nftSchema.pre("save", function (next) {
+  // console.log(this);
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+nftSchema.pre("save", function (next) {
+  console.log("document will save..");
+  next();
+});
+
+nftSchema.post("save", function (doc, next) {
+  console.log(doc);
+  next();
 });
 
 const NFT = mongoose.model("NFT", nftSchema);
