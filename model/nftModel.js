@@ -55,6 +55,8 @@ const nftSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now(),
+    // to hide while query
+    select: false,
   },
   startDates: [Date],
 });

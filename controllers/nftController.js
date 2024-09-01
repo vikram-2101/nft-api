@@ -114,8 +114,51 @@ const NFT = require("../model/nftModel");
 
 const getAllNFTs = async (req, res) => {
   try {
-    console.log(req.query);
-    const nfts = await NFT.find();
+    // const nfts = await NFT.find();
+
+    // const nfts = await NFT.find()
+    //   .where("duration")
+    //   .equals(5)
+    //   .where("difficulty")
+    //   .equals("easy");
+
+    //build query
+    const queryObj = { ...req.query };
+    const excludeFields = ["page", "sort", "limit", "fields"];
+    excludeFields.forEach((el) => delete queryObj[el]);
+    // execute query
+
+    // console.log(req.query, queryObj);
+
+    //ADVANCE FILTERING QUERY
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    console.log(JSON.parse(queryStr));
+
+    let query = NFT.find(JSON.parse(queryStr));
+
+    // SORTING METHOD
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      console.log(sortBy);
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("-createdAt");
+    }
+
+    // FIELDS LIMITING
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      query = query.select(fields);
+    } else {
+      query = query.select("-__v");
+    }
+
+    const nfts = await query;
+
+    // send response
     res.status(200).json({
       status: "success",
       requestTime: req.requestTime,
