@@ -5,12 +5,16 @@ const {
   getSingleNFT,
   updateNFT,
   deleteNFT,
+  aliasTopNFTs,
   // checkId,
   // checkBody,
 } = require("../controllers/nftController");
 // const nftControllers = require('./../controllers/nftController')
 
 const router = express.Router();
+
+//TOP 5 NFTS BY PRICE
+router.route("/top-5-nfts").get(aliasTopNFTs, getAllNFTs);
 
 // router.param("id", checkId);
 
