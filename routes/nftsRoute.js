@@ -7,6 +7,7 @@ const {
   deleteNFT,
   aliasTopNFTs,
   getNFTsStats,
+  getMonthlyPlan,
   // checkId,
   // checkBody,
 } = require("../controllers/nftController");
@@ -20,8 +21,8 @@ router.route("/top-5-nfts").get(aliasTopNFTs, getAllNFTs);
 // STATS ROUTE
 router.route("/nfts-stats").get(getNFTsStats);
 
-// router.param("id", checkId);
-
+//GET MONTHLY PLAN
+router.route("/monthly-plan/:year").get(getMonthlyPlan);
 //ROUTER FOR NFTS
 router.route("/").get(getAllNFTs).post(createNFT);
 
