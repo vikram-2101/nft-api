@@ -156,6 +156,20 @@ const getAllNFTs = async (req, res) => {
       query = query.select("-__v");
     }
 
+    // PAGINATION FUNCTION
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 10;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const newNFTs = await NFT.countDocuments();
+      if (skip >= newNFTs) {
+        throw new Error("This page doesn't exist");
+      }
+    }
+
     const nfts = await query;
 
     // send response
@@ -168,7 +182,7 @@ const getAllNFTs = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(404).json({
       status: "fail",
       message: error,
     });
