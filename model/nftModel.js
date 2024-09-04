@@ -123,6 +123,13 @@ nftSchema.post(/^find/, function (doc, next) {
   // console.log(doc);
   next();
 });
+
+// AGGREGATE MIDDLEWARE
+nftSchema.pre("aggregate", function (next) {
+  // console.log(this.pipeline());
+  this.pipeline().unshift({ $match: { secretNFTs: { $ne: true } } });
+  next();
+});
 const NFT = mongoose.model("NFT", nftSchema);
 
 module.exports = NFT;
