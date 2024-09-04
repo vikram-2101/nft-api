@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
-
+const validator = require("validator");
 const nftSchema = new mongoose.Schema(
   {
     name: {
@@ -8,6 +8,9 @@ const nftSchema = new mongoose.Schema(
       required: [true, "A NFT must have a name"],
       unique: true,
       trim: true,
+      maxlength: [40, "nft must have a maximum length of 40 character"],
+      minlength: [10, "nft must have a minimum length of 10 character"],
+      // validate: [validator.isAlpha, "NFT name must only contain Characters"],
     },
     slug: String,
     duration: {
@@ -21,10 +24,16 @@ const nftSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       required: [true, "must have difficulty"],
+      enum: {
+        values: ["easy", "medium", "difficulty"],
+        message: "Difficuly is either: easy, medium and difficulty",
+      },
     },
     ratingsAverage: {
       type: Number,
       default: 4.5,
+      min: [1, "must have 1"],
+      max: [5, "must have 5"],
     },
     ratingsQuantity: {
       type: Number,
@@ -39,7 +48,14 @@ const nftSchema = new mongoose.Schema(
       required: [true, "A NFT must have price"],
     },
     priceDiscount: {
+      // THIS WILL ONLY WORK AT THE TIME OF CREATE NOT UPDATE
       type: Number,
+      validate: {
+        validator: function (val) {
+          return val < this.price; // 200 > 100 20 < 100
+        },
+        message: "Discount price ({VALUE}) should be below regular price",
+      },
     },
     summary: {
       type: String,
