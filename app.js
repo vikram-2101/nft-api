@@ -161,7 +161,43 @@
 //   console.log(`App running on port ${port}...`);
 // });
 
-// PART 2
+// // PART 2
+
+// const express = require("express");
+// const morgan = require("morgan");
+
+// const nftsRouter = require("./routes/nftsRoute");
+// const usersRouter = require("./routes/usersRoute");
+
+// const app = express();
+// app.use(express.json());
+// app.use(morgan("dev"));
+
+// // if (process.env.NODE_ENV === "development") {
+// //   app.use(morgan("dev"));
+// // }
+
+// // SERVING TEMPLATE DEMO
+// app.use(express.static(`${__dirname}/nft-data/img`));
+
+// // CUSTOM MIDDLEWARE
+
+// // app.use((req, res, next) => {
+// //   console.log("Hey i am middleware function");
+// //   next();
+// // });
+
+// // app.use((req, res, next) => {
+// //   req.requestTime = new Date().toISOString();
+// //   next();
+// // });
+
+// app.use("/api/v1/nfts", nftsRouter);
+// app.use("/api/v1/users", usersRouter);
+
+// module.exports = app;
+
+// PART 3 ERROR HANDLING
 const express = require("express");
 const morgan = require("morgan");
 
@@ -172,26 +208,22 @@ const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
 
-// if (process.env.NODE_ENV === "development") {
-//   app.use(morgan("dev"));
-// }
-
 // SERVING TEMPLATE DEMO
 app.use(express.static(`${__dirname}/nft-data/img`));
-
-// CUSTOM MIDDLEWARE
-
-// app.use((req, res, next) => {
-//   console.log("Hey i am middleware function");
-//   next();
-// });
-
-// app.use((req, res, next) => {
-//   req.requestTime = new Date().toISOString();
-//   next();
-// });
-
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 app.use("/api/v1/nfts", nftsRouter);
 app.use("/api/v1/users", usersRouter);
 
+/// ERROR SECTION
+app.all("*", (req, res) => {
+  res.status(404).json({
+    status: "fail",
+    message: `Can't find ${req.originalUrl} on this server`,
+  });
+});
+
+// GLOBAL ERROR HANDLER
 module.exports = app;
