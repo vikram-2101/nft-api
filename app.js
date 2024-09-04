@@ -181,15 +181,15 @@ app.use(express.static(`${__dirname}/nft-data/img`));
 
 // CUSTOM MIDDLEWARE
 
-app.use((req, res, next) => {
-  console.log("Hey i am middleware function");
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log("Hey i am middleware function");
+//   next();
+// });
 
-app.use((req, res, next) => {
-  req.requestTime = new Date().toISOString();
-  next();
-});
+// app.use((req, res, next) => {
+//   req.requestTime = new Date().toISOString();
+//   next();
+// });
 
 app.use("/api/v1/nfts", nftsRouter);
 app.use("/api/v1/users", usersRouter);
