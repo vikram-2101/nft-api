@@ -12,7 +12,7 @@ mongoose.connect(DB).then((con) => {
   // console.log(con.connection);
   console.log("DB Connnected Successfully");
 });
-
+console.log(process.env.NODE_ENV);
 // const testNFT = new NFT({
 //   name: "The crazy monkey",
 //   rating: 3.2,
