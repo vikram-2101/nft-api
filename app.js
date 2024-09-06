@@ -201,6 +201,8 @@
 const express = require("express");
 const morgan = require("morgan");
 
+const globalErrorController = require("./controllers/errorController");
+const AppError = require("./Utils/appError");
 const nftsRouter = require("./routes/nftsRoute");
 const usersRouter = require("./routes/usersRoute");
 
@@ -218,12 +220,18 @@ app.use("/api/v1/nfts", nftsRouter);
 app.use("/api/v1/users", usersRouter);
 
 /// ERROR SECTION
-app.all("*", (req, res) => {
-  res.status(404).json({
-    status: "fail",
-    message: `Can't find ${req.originalUrl} on this server`,
-  });
+app.all("*", (req, res, next) => {
+  // res.status(404).json({
+  //   status: "fail",
+  //   message: `Can't find ${req.originalUrl} on this server`,
+  // });
+  // const err = new Error(`Can't find ${req.originalUrl} on this server`);
+  // err.status = "fail";
+  // err.statusCode = 404;
+  // next(err);
+  next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
 });
 
 // GLOBAL ERROR HANDLER
+app.use(globalErrorController);
 module.exports = app;
