@@ -1,3 +1,40 @@
+// const dotenv = require("dotenv");
+// const mongoose = require("mongoose");
+// const app = require("./app");
+// dotenv.config({ path: "./config.env" });
+
+// const DB = process.env.DATABASE.replace(
+//   "<PASSWORD>",
+//   process.env.DATABASE_PASSWORD
+// );
+
+// mongoose.connect(DB).then((con) => {
+//   // console.log(con.connection);
+//   console.log("DB Connnected Successfully");
+// });
+// // const testNFT = new NFT({
+// //   name: "The crazy monkey",
+// //   rating: 3.2,
+// //   price: 345,
+// // });
+
+// // testNFT
+// //   .save()
+// //   .then((docNFT) => {
+// //     console.log(docNFT);
+// //   })
+// //   .catch((error) => {
+// //     console.log("Error", error);
+// //   });
+
+// const port = 3000;
+// app.listen(port, () => {
+//   console.log(`App running on port ${port}...`);
+// });
+
+// this is a change
+
+// PART 2 ----------
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const app = require("./app");
@@ -8,29 +45,22 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD
 );
 
-mongoose.connect(DB).then((con) => {
-  // console.log(con.connection);
-  console.log("DB Connnected Successfully");
-});
-console.log(process.env.NODE_ENV);
-// const testNFT = new NFT({
-//   name: "The crazy monkey",
-//   rating: 3.2,
-//   price: 345,
-// });
-
-// testNFT
-//   .save()
-//   .then((docNFT) => {
-//     console.log(docNFT);
-//   })
-//   .catch((error) => {
-//     console.log("Error", error);
-//   });
+mongoose
+  .connect(DB)
+  .then((con) => {
+    console.log("DB Connnected Successfully");
+  })
+  .catch((err) => console.log("Error"));
 
 const port = 3000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
 
-// this is a change
+process.on("unhandledRejection", (err) => {
+  console.log(err.name, err.message);
+  console.log("UnhandledRejection Shutting down application");
+  server.close(() => {
+    process.exit(1);
+  });
+});
