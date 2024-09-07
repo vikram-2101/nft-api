@@ -1,9 +1,14 @@
-const getAllUsers = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "Interval server error",
+const User = require("../model/userModel");
+const catchAsync = require("../Utils/catchAsync");
+const getAllUsers = catchAsync(async (req, res) => {
+  const users = await User.find();
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: users,
+    },
   });
-};
+});
 const createUser = (req, res) => {
   res.status(500).json({
     status: "error",
