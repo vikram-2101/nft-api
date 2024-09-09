@@ -82,7 +82,12 @@ const protect = catchAsync(async (req, res, next) => {
   });
   // console.log(decoded);
   // 3 user exist
-
+  const freshUser = await user.findOne(decoded.id);
+  if (!freshUser) {
+    return next(
+      new AppError("The User belonging to this token no longer exist.", 401)
+    );
+  }
   // 4 change password
   next();
 });
