@@ -2,13 +2,14 @@ const User = require("../model/userModel");
 const AppError = require("../Utils/appError");
 const catchAsync = require("../Utils/catchAsync");
 const jwt = require("jsonwebtoken");
-
+const { promisify } = require("util");
 // CREATE TOKEN
 
 const signToken = (id) => {
   const token = jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
+  return token;
 };
 
 // SIGN UP
@@ -22,7 +23,7 @@ const signup = catchAsync(async (req, res, next) => {
       passwordConfirm: req.body.passwordConfirm,
     });
 
-    console.log(newUser);
+    // console.log(newUser);
 
     const token = signToken(newUser._id);
 
@@ -54,10 +55,10 @@ const login = catchAsync(async (req, res, next) => {
   }
 
   const token = signToken(user.id);
+  // console.log(token);
   res.status(200).json({
     status: "success",
     token,
-    user,
   });
 });
 
@@ -76,7 +77,12 @@ const protect = catchAsync(async (req, res, next) => {
     return next(new AppError("You are not logged in to get access", 401));
   }
   // 2 validate token
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+  // console.log(decoded);
   // 3 user exist
+
   // 4 change password
   next();
 });
