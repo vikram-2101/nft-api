@@ -15,13 +15,13 @@ const signToken = (id) => {
 // SIGN UP
 const signup = catchAsync(async (req, res, next) => {
   try {
-    // const newUser = await User.create(req.body);
-    const newUser = await User.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-      passwordConfirm: req.body.passwordConfirm,
-    });
+    const newUser = await User.create(req.body);
+    // const newUser = await User.create({
+    //   name: req.body.name,
+    //   email: req.body.email,
+    //   password: req.body.password,
+    //   passwordConfirm: req.body.passwordConfirm,
+    // });
 
     // console.log(newUser);
 

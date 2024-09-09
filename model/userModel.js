@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
       validate: {
         // THIS will only work on save not on find, findone
         validator: function (el) {
-          return el == this.password; // true or false
+          return el === this.password; // true or false
         },
         message: "password do not match",
       },
