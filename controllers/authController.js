@@ -22,6 +22,8 @@ const signup = catchAsync(async (req, res, next) => {
       passwordConfirm: req.body.passwordConfirm,
     });
 
+    console.log(newUser);
+
     const token = signToken(newUser._id);
 
     res.status(201).json({
@@ -32,10 +34,7 @@ const signup = catchAsync(async (req, res, next) => {
       },
     });
   } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      message: error.message,
-    });
+    return next(error, 401);
   }
 });
 
@@ -62,7 +61,28 @@ const login = catchAsync(async (req, res, next) => {
   });
 });
 
+// PROTECTING DATA
+
+const protect = catchAsync(async (req, res, next) => {
+  // 1 check token
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (!token) {
+    return next(new AppError("You are not logged in to get access", 401));
+  }
+  // 2 validate token
+  // 3 user exist
+  // 4 change password
+  next();
+});
+
 module.exports = {
   signup,
   login,
+  protect,
 };

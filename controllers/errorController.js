@@ -99,6 +99,8 @@ const handleDuplicationFieldsBD = (err) => {
 };
 
 const sendErrorDev = (err, res) => {
+  // console.log(err);
+
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
@@ -130,10 +132,14 @@ const sendErrorPro = (err, res) => {
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
+  let environment = process.env.NODE_ENV;
+  console.log(environment);
 
-  if (process.env.NODE_ENV === "development") {
+  if (environment == "development") {
+    console.log("ahjscjdfakjl");
+
     sendErrorDev(err, res);
-  } else if (process.env.NODE_ENV === "production") {
+  } else {
     let error = { ...err };
     error.message = err.message;
     error.name = err.name;
