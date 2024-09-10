@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema(
     photo: {
       type: String,
     },
+    role: {
+      type: String,
+      enum: ["user", "creator", "admin", "guide"],
+      default: "user",
+    },
     password: {
       type: String,
       required: [true, "Please provide a password"],
@@ -66,7 +71,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
       10
     );
     return JWTTimestamp < changedTimeStamp;
-    console.log(this.passwordChangedAt, JWTTimestamp);
+    // console.log(this.passwordChangedAt, JWTTimestamp);
   }
   // BY DEFAULT WE WANT TO RETURN FALSE, MEANS NOT CHANGE
   return false;

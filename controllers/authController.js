@@ -97,8 +97,17 @@ const protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+const restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError("you have not access to delete nft", 403));
+    }
+    next();
+  };
+};
 module.exports = {
   signup,
   login,
   protect,
+  restrictTo,
 };

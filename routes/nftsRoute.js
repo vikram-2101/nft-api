@@ -11,7 +11,7 @@ const {
   // checkId,
   // checkBody,
 } = require("../controllers/nftController");
-const { login, protect } = require("../controllers/authController");
+const { login, restrictTo, protect } = require("../controllers/authController");
 // const nftControllers = require('./../controllers/nftController')
 
 const router = express.Router();
@@ -28,6 +28,10 @@ router.route("/monthly-plan/:year").get(getMonthlyPlan);
 //ROUTER FOR NFTS
 router.route("/").get(protect, getAllNFTs).post(createNFT);
 
-router.route("/:id").get(getSingleNFT).patch(updateNFT).delete(deleteNFT);
+router
+  .route("/:id")
+  .get(getSingleNFT)
+  .patch(updateNFT)
+  .delete(protect, restrictTo("admin", "guide"), deleteNFT);
 
 module.exports = router;
