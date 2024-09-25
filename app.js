@@ -204,6 +204,8 @@ const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
+const hpp = require("hpp");
+
 const globalErrorController = require("./controllers/errorController");
 const AppError = require("./Utils/appError");
 const nftsRouter = require("./routes/nftsRoute");
@@ -216,6 +218,21 @@ app.use(express.json({ limit: "10kb" }));
 app.use(mongoSanitize());
 // DATA SANITIZATION AGAINST site script xss
 app.use(xss());
+
+// PREVENT PARAMETER POLLUTION
+app.use(
+  hpp({
+    whitelist: [
+      "duration",
+      "difficulty",
+      "maxGroupSize",
+      "price",
+      "ratingsAverage",
+      "ratingsQuantity",
+    ],
+  })
+);
+
 // SECURE HEADER HTTP
 app.use(helmet());
 // GLOBAL MIDDLEWARE
