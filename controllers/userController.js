@@ -9,6 +9,7 @@ const filterObj = (obj, ...allowedFields) => {
   });
   return newObj;
 };
+
 const updateMe = catchAsync(async (req, res, next) => {
   // 1   CREATE ERROR IF USER UPDATING PASSWORD
   if (req.body.password || req.body.passwordConfirm) {
