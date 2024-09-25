@@ -200,6 +200,7 @@
 // PART 3 ERROR HANDLING
 const express = require("express");
 const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
 
 const globalErrorController = require("./controllers/errorController");
 const AppError = require("./Utils/appError");
@@ -208,8 +209,19 @@ const usersRouter = require("./routes/usersRoute");
 
 const app = express();
 app.use(express.json());
-app.use(morgan("dev"));
 
+// GLOBAL MIDDLEWARE
+// if (process.env.NODE_ENV === "development") {
+//   app.use(morgan("dev"));
+// }
+
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many request from this IP, Please try again in an hour",
+});
+app.use("/api", limiter);
+app.use(morgan("dev"));
 // SERVING TEMPLATE DEMO
 app.use(express.static(`${__dirname}/nft-data/img`));
 app.use((req, res, next) => {
